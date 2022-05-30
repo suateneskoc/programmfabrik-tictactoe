@@ -1,13 +1,12 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PlayerSwitch from "./PlayerSwitch";
 import DarkModeSwitch from "./DarkModeSwitch";
 import Grid from "./Grid";
 
 const App = () => {
-  const [multiplayer, setMultiplayer] = useState(false);
-  const [darkMode, setDarkMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+  const darkMode = useSelector((state) => state.darkMode);
+  const dispatch = useDispatch();
 
   return (
     <div className={`${darkMode ? "dark" : null} `}>
@@ -16,11 +15,8 @@ const App = () => {
           <div className="flex justify-between">
             <h1>TicTacToe</h1>
             <div className="flex">
-              <PlayerSwitch
-                multiplayer={multiplayer}
-                setMultiplayer={setMultiplayer}
-              />
-              <DarkModeSwitch darkMode={darkMode} setDarkMode={setDarkMode} />
+              <PlayerSwitch />
+              <DarkModeSwitch />
             </div>
           </div>
           <Grid />
