@@ -5,7 +5,7 @@ import DarkModeSwitch from "./DarkModeSwitch";
 import Grid from "./Grid";
 
 const App = () => {
-  const darkMode = useSelector((state) => state.darkMode);
+  const darkMode = useSelector((state) => state.darkMode.value);
   const dispatch = useDispatch();
 
   return (
