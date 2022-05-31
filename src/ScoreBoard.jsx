@@ -66,7 +66,7 @@ const ScoreBoard = () => {
   const game = useSelector((state) => state.game);
   const dispatch = useDispatch();
   return (
-    <div className="flex justify-evenly">
+    <div className="flex justify-evenly mb-5">
       <RealPlayerBoard index={0} />
       {game.multiplayer ? (
         <RealPlayerBoard index={1} />
