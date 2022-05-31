@@ -12,8 +12,8 @@ const App = () => {
 
   return (
     <div className={`${darkMode ? "dark" : null} `}>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex justify-center">
-        <div className="container bg-white dark:bg-black p-3">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex justify-center">
+        <div className="container max-w-xl bg-white dark:bg-black p-4 sm:p-6">
           <div className="flex justify-between mb-3">
             <BackButton />
             <div className="flex">

@@ -7,14 +7,14 @@ const PlayerSwitch = () => {
 
   return (
     <button
-      className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-md p-2 mr-2 transition"
+      className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-md p-3 mr-3 transition"
       onClick={() => dispatch(toggleMultiplayer())}
     >
       {multiplayer ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
+          width="24"
+          height="24"
           fill="currentColor"
           viewBox="0 0 16 16"
         >
@@ -28,8 +28,8 @@ const PlayerSwitch = () => {
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
+          width="24"
+          height="24"
           fill="currentColor"
           viewBox="0 0 16 16"
         >

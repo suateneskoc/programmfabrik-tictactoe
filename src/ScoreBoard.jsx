@@ -3,21 +3,40 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPlayerName } from "./features/gameSlice";
 
 const RealPlayerBoard = ({ index }) => {
-  const players = useSelector((state) => state.game.players);
+  const game = useSelector((state) => state.game);
   const dispatch = useDispatch();
-  const [name, setName] = useState(players[index].name);
+  const [name, setName] = useState(game.players[index].name);
   const [editing, setEditing] = useState(false);
   return (
-    <div className="group flex flex-col items-center">
+    <div
+      className={`${
+        index === game.turn ? "bg-gray-100 dark:bg-gray-900" : ""
+      } group flex flex-col items-center rounded-lg p-2 transition duration-500`}
+    >
       <div className="flex justify-center items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          viewBox="0 0 16 16"
-          className="w-6 h-6 text-gray-500"
-        >
-          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-        </svg>
+        {index ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+			className="mx-1"
+          >
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+			className="mx-1"
+          >
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+          </svg>
+        )}
         {editing ? (
           <form
             onSubmit={(e) => {
@@ -29,7 +48,7 @@ const RealPlayerBoard = ({ index }) => {
             <input
               type="text"
               value={name}
-              className="text-xl font-medium focus:ring-indigo-500 focus:border-indigo-500 block w-32 shadow-sm border-gray-300 rounded-md"
+              className="text-xl font-medium block w-32 border-gray-300 focus:ring-gray-500 focus:border-gray-500 dark:border-gray-700 dark:bg-black shadow-sm rounded-md px-2 py-1.5"
               onChange={(e) => setName(e.target.value)}
               autoComplete="off"
             />
@@ -37,8 +56,8 @@ const RealPlayerBoard = ({ index }) => {
           </form>
         ) : (
           <>
-            <div className="text-xl font-medium w-24 px-3 py-2">
-              {players[index].name}
+            <div className="text-xl font-medium w-24 px-2 py-1.5">
+              {game.players[index].name}
             </div>
             <button
               className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-full h-auto p-2 transition"
@@ -57,7 +76,7 @@ const RealPlayerBoard = ({ index }) => {
           </>
         )}
       </div>
-      <div className="text-7xl">{players[index].score}</div>
+      <div className="text-7xl">{game.players[index].score}</div>
     </div>
   );
 };
@@ -71,17 +90,23 @@ const ScoreBoard = () => {
       {game.multiplayer ? (
         <RealPlayerBoard index={1} />
       ) : (
-        <div className="flex flex-col items-center">
+        <div
+          className={`${
+            game.turn ? "bg-gray-100 dark:bg-gray-900" : ""
+          } rounded-lg flex flex-col items-center p-2 transition duration-500`}
+        >
           <div className="flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
               fill="currentColor"
               viewBox="0 0 16 16"
-              className="w-6 h-6 text-gray-500"
+			  className="mx-1"
             >
-              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
             </svg>
-            <div className="text-xl font-medium w-24 px-3 py-2 mr-8">
+            <div className="text-xl font-medium w-24 px-2 py-1.5 mr-8">
               {game.players[1].name}
             </div>
           </div>
