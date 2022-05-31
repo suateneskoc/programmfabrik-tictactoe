@@ -12,6 +12,7 @@ const initialState = {
   turn: 0,
   count: 0,
   board: ["", "", "", "", "", "", "", "", ""],
+  history: [],
 };
 
 export const gameSlice = createSlice({
@@ -25,6 +26,7 @@ export const gameSlice = createSlice({
       state.turn = initialState.turn;
       state.count = initialState.turn;
       state.board = initialState.board;
+      state.history = initialState.history;
     },
     setPlayerName: ({ players }, { payload }) => {
       players[payload.index].name = payload.name;
@@ -41,6 +43,7 @@ export const gameSlice = createSlice({
       }
       state.turn = (state.turn + 1) % 2;
       state.count++;
+      state.history.push(payload);
     },
     checkResult: (state) => {
       if (state.ended) {
@@ -92,6 +95,7 @@ export const gameSlice = createSlice({
       state.startTurn = (state.startTurn + 1) % 2;
       state.count = initialState.count;
       state.board = initialState.board;
+      state.history = initialState.history;
     },
     makeRandomMove: (state) => {
       if (state.multiplayer || !state.turn) {
@@ -106,6 +110,7 @@ export const gameSlice = createSlice({
       state.turn ? (state.board[i] = "o") : (state.board[i] = "x");
       state.turn = (state.turn + 1) % 2;
       state.count++;
+      state.history.push(i);
     },
     restartGame: (state) => {
       state.players[0].score = initialState.players[0].score;
@@ -113,6 +118,13 @@ export const gameSlice = createSlice({
       state.turn = initialState.turn;
       state.count = initialState.turn;
       state.board = initialState.board;
+      state.history = initialState.history;
+    },
+    undoMove: (state) => {
+      if (!state.history.length) return;
+      state.board[state.history.pop()] = "";
+      state.count--;
+      state.turn = (state.turn + 1) % 2;
     },
   },
 });
@@ -125,6 +137,7 @@ export const {
   nextGame,
   makeRandomMove,
   restartGame,
+  undoMove
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
