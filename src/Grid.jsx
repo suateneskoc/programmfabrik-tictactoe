@@ -103,6 +103,7 @@ const Grid = () => {
         }, 750);
       }
     }, 250);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game.board]);
 
   useEffect(() => {}, [game]);
