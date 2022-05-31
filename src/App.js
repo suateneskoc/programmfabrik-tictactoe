@@ -4,6 +4,7 @@ import BackButton from "./BackButton";
 import PlayerSwitch from "./PlayerSwitch";
 import DarkModeSwitch from "./DarkModeSwitch";
 import Grid from "./Grid";
+import ScoreBoard from "./ScoreBoard";
 
 const App = () => {
   const darkMode = useSelector((state) => state.darkMode.value);
@@ -21,6 +22,7 @@ const App = () => {
             </div>
           </div>
           <Grid />
+          <ScoreBoard />
         </div>
       </div>
     </div>
