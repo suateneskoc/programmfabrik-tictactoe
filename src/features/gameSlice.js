@@ -3,6 +3,7 @@ import winningCombinations from "../data.json";
 
 const initialState = {
   multiplayer: false,
+  difficulty: "Hard",
   players: [
     { name: "Player 1", score: 0 },
     { name: "Player 2", score: 0 },
@@ -137,7 +138,7 @@ export const {
   nextGame,
   makeRandomMove,
   restartGame,
-  undoMove
+  undoMove,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
