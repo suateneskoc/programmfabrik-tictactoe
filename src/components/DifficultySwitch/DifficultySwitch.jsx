@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { CircleFillIcon, CircleHalfIcon, CircleIcon } from "../../assets/svgs";
 import DifficultyModal from "./DifficultyModal";
 
 const DifficultySwitch = () => {
@@ -14,38 +15,11 @@ const DifficultySwitch = () => {
       >
         {difficulty}
         {difficulty === "Easy" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="21"
-            height="21"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-            className="ml-2"
-          >
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-          </svg>
+          <CircleIcon width={21} height={21} className="ml-2" />
         ) : difficulty === "Normal" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="21"
-            height="21"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-            className="ml-2"
-          >
-            <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-          </svg>
+          <CircleHalfIcon width={21} height={21} className="ml-2" />
         ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="21"
-            height="21"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-            className="ml-2"
-          >
-            <circle cx="8" cy="8" r="8" />
-          </svg>
+          <CircleFillIcon width={21} height={21} className="ml-2" />
         )}
       </button>
       <DifficultyModal show={difficultyModal} setShow={setDifficultyModal} />

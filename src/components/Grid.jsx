@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { CircleIcon, XLgIcon } from "../assets/svgs";
 import {
   makeMove,
   checkResult,
   nextGame,
   makeRandomMove,
-} from "./features/gameSlice";
+} from "../features/gameSlice";
 
 const GridButton = ({ index, value }) => {
   const game = useSelector((state) => state.game);
@@ -25,27 +26,9 @@ const GridButton = ({ index, value }) => {
       >
         <div className="opacity-0 group-hover:opacity-25">
           {!game.turn ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="w-full h-full"
-              viewBox="0 0 16 16"
-            >
-              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-            </svg>
+            <XLgIcon className="w-full h-full" />
           ) : game.multiplayer ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="w-full h-full"
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            </svg>
+            <CircleIcon className="w-full h-full" />
           ) : null}
         </div>
       </button>
@@ -63,27 +46,9 @@ const GridButton = ({ index, value }) => {
         }`}
       >
         {value === "x" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-x-lg w-full h-full"
-            viewBox="0 0 16 16"
-          >
-            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-          </svg>
+          <XLgIcon className="w-full h-full" />
         ) : value === "o" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-circle w-full h-full"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-          </svg>
+          <CircleIcon className="w-full h-full" />
         ) : null}
       </div>
     </button>
@@ -103,7 +68,7 @@ const Grid = () => {
         }, 750);
       }
     }, 250);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game.board]);
 
   useEffect(() => {}, [game]);
