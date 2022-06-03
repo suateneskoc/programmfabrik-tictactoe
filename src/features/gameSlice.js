@@ -62,11 +62,9 @@ export const gameSlice = createSlice({
       if (state.ended) {
         return;
       }
-      let ended = false;
       if (state.count === 9) {
-        ended = true;
+        state.ended = true;
       }
-      let winningIndexes = initialState.winningIndexes;
       for (let i = 0; i < winningCombinations.length; i++) {
         if (
           state.board[winningCombinations[i][0][0]][

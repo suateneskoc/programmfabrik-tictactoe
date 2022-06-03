@@ -5,7 +5,6 @@ import DifficultyModal from "./DifficultyModal";
 
 const DifficultySwitch = () => {
   const game = useSelector((state) => state.game);
-  const dispatch = useDispatch();
   const [difficultyModal, setDifficultyModal] = useState(false);
   return (
     <>
