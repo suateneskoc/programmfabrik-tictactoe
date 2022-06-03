@@ -17,6 +17,11 @@ const initialState = {
     ["", "", ""],
     ["", "", ""],
   ],
+  winningIndexes: [
+    [-1, -1],
+    [-1, -1],
+    [-1, -1],
+  ],
   history: [],
 };
 
@@ -58,25 +63,25 @@ export const gameSlice = createSlice({
         return;
       }
       let ended = false;
-      let winningIndexes = [];
       if (state.count === 9) {
         ended = true;
       }
+      let winningIndexes = initialState.winningIndexes;
       for (let i = 0; i < winningCombinations.length; i++) {
         if (
-          state.board[
-            (winningCombinations[i][0][0], winningCombinations[i][0][1])
+          state.board[winningCombinations[i][0][0]][
+            winningCombinations[i][0][1]
           ] === "x" &&
-          state.board[
-            (winningCombinations[i][1][0], winningCombinations[i][1][1])
+          state.board[winningCombinations[i][1][0]][
+            winningCombinations[i][1][1]
           ] === "x" &&
-          state.board[
-            (winningCombinations[i][2][0], winningCombinations[i][2][1])
+          state.board[winningCombinations[i][2][0]][
+            winningCombinations[i][2][1]
           ] === "x"
         ) {
-          ended = true;
+          state.ended = true;
           state.players[0].score++;
-          winningIndexes = [
+          state.winningIndexes = [
             winningCombinations[i][0],
             winningCombinations[i][1],
             winningCombinations[i][2],
@@ -84,29 +89,25 @@ export const gameSlice = createSlice({
           break;
         }
         if (
-          state.board[
-            (winningCombinations[i][0][0], winningCombinations[i][0][1])
+          state.board[winningCombinations[i][0][0]][
+            winningCombinations[i][0][1]
           ] === "o" &&
-          state.board[
-            (winningCombinations[i][1][0], winningCombinations[i][1][1])
+          state.board[winningCombinations[i][1][0]][
+            winningCombinations[i][1][1]
           ] === "o" &&
-          state.board[
-            (winningCombinations[i][2][0], winningCombinations[i][2][1])
+          state.board[winningCombinations[i][2][0]][
+            winningCombinations[i][2][1]
           ] === "o"
         ) {
-          ended = true;
+          state.ended = true;
           state.players[1].score++;
-          winningIndexes = [
+          state.winningIndexes = [
             winningCombinations[i][0],
             winningCombinations[i][1],
             winningCombinations[i][2],
           ];
           break;
         }
-      }
-      if (ended) {
-        state.ended = true;
-        state.winningIndexes = winningIndexes;
       }
     },
     nextGame: (state) => {
@@ -142,6 +143,7 @@ export const gameSlice = createSlice({
       }
       if (state.difficulty === "Normal") {
         let xCount;
+        // Check if player is about to win
         for (let i = 0; i < winningCombinations.length; i++) {
           xCount = 0;
           for (let j = 0; j < 3; j++) {
@@ -159,6 +161,7 @@ export const gameSlice = createSlice({
               xCount++;
           }
           if (xCount === 2) {
+            // Block the winning streak
             for (let j = 0; j < 3; j++) {
               if (
                 state.board[winningCombinations[i][j][0]][
@@ -177,6 +180,98 @@ export const gameSlice = createSlice({
         makeRandomMove();
         return;
       }
+      if (state.difficulty === "Hard") {
+        const checkWinner = (board, count) => {
+          // returns 1: computer wins, -1: player winds, 0: tie, null: no winner
+          for (let i = 0; i < winningCombinations.length; i++) {
+            if (
+              board[winningCombinations[i][0][0]][
+                winningCombinations[i][0][1]
+              ] === "x" &&
+              board[winningCombinations[i][1][0]][
+                winningCombinations[i][1][1]
+              ] === "x" &&
+              board[winningCombinations[i][2][0]][
+                winningCombinations[i][2][1]
+              ] === "x"
+            ) {
+              return -10;
+            }
+            if (
+              board[winningCombinations[i][0][0]][
+                winningCombinations[i][0][1]
+              ] === "o" &&
+              board[winningCombinations[i][1][0]][
+                winningCombinations[i][1][1]
+              ] === "o" &&
+              board[winningCombinations[i][2][0]][
+                winningCombinations[i][2][1]
+              ] === "o"
+            ) {
+              return 10;
+            }
+          }
+          if (count === 9) return 0;
+          return null;
+        };
+        const minimax = (board, count, depth, maximizing) => {
+          let score = checkWinner(board, count);
+          if (score !== null) return score;
+          if (maximizing) {
+            let bestScore = -Infinity;
+            for (let i = 0; i < 3; i++) {
+              for (let j = 0; j < 3; j++) {
+                if (board[i][j] === "") {
+                  board[i][j] = "o";
+                  let score = minimax(board, count + 1, depth + 1, false);
+                  board[i][j] = "";
+                  bestScore = Math.max(score - depth, bestScore);
+                }
+              }
+            }
+            return bestScore;
+          } else {
+            let bestScore = Infinity;
+            for (let i = 0; i < 3; i++) {
+              for (let j = 0; j < 3; j++) {
+                if (board[i][j] === "") {
+                  board[i][j] = "x";
+                  let score = minimax(board, count + 1, depth + 1, true);
+                  board[i][j] = "";
+                  bestScore = Math.min(score + depth, bestScore);
+                }
+              }
+            }
+            return bestScore;
+          }
+        };
+        let bestScore = -Infinity;
+        console.log(bestScore);
+        let bestMove;
+        // Calculate minimax value for each move
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            if (state.board[i][j] === "") {
+              let nextBoard = [
+                [...state.board[0]],
+                [...state.board[1]],
+                [...state.board[2]],
+              ];
+              nextBoard[i][j] = "o";
+              let score = minimax(nextBoard, state.count + 1, 0, false);
+              nextBoard[i][j] = "";
+              if (score > bestScore) {
+                bestScore = score;
+                bestMove = [i, j];
+                console.log(bestMove);
+              }
+            }
+          }
+        }
+        makeOpponentMove(bestMove[0], bestMove[1]);
+        return;
+      }
+      console.log("ERROR: Game difficulty state is messed up.");
     },
     restartGame: (state) => {
       state.players[0].score = initialState.players[0].score;
