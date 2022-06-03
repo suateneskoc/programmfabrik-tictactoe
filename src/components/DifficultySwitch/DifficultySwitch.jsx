@@ -4,19 +4,21 @@ import { CircleFillIcon, CircleHalfIcon, CircleIcon } from "../../assets/svgs";
 import DifficultyModal from "./DifficultyModal";
 
 const DifficultySwitch = () => {
-  const difficulty = useSelector((state) => state.game.difficulty);
+  const game = useSelector((state) => state.game);
   const dispatch = useDispatch();
   const [difficultyModal, setDifficultyModal] = useState(true);
   return (
     <>
       <button
-        className="font-semibold text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:hover:text-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 dark:border-gray-800 rounded-md flex items-center p-3 mr-3 transition"
-        onClick={() => dispatch(setDifficultyModal(true))}
+        className={`font-semibold text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 border border-gray-200 dark:hover:text-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 dark:border-gray-800 rounded-md flex items-center p-3 mr-3 transition ${
+          game.multiplayer ? "opacity-0" : ""
+        }`}
+        onClick={() => setDifficultyModal(true)}
       >
-        {difficulty}
-        {difficulty === "Easy" ? (
+        {game.difficulty}
+        {game.difficulty === "Easy" ? (
           <CircleIcon width={21} height={21} className="ml-2" />
-        ) : difficulty === "Normal" ? (
+        ) : game.difficulty === "Normal" ? (
           <CircleHalfIcon width={21} height={21} className="ml-2" />
         ) : (
           <CircleFillIcon width={21} height={21} className="ml-2" />

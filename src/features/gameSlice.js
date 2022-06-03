@@ -3,7 +3,7 @@ import winningCombinations from "../data.json";
 
 const initialState = {
   multiplayer: false,
-  difficulty: "Hard",
+  difficulty: "Easy",
   players: [
     { name: "Player 1", score: 0 },
     { name: "Player 2", score: 0 },
@@ -28,6 +28,9 @@ export const gameSlice = createSlice({
       state.count = initialState.turn;
       state.board = initialState.board;
       state.history = initialState.history;
+    },
+    setDifficulty: (state, { payload }) => {
+      state.difficulty = payload;
     },
     setPlayerName: ({ players }, { payload }) => {
       players[payload.index].name = payload.name;
@@ -132,6 +135,7 @@ export const gameSlice = createSlice({
 
 export const {
   toggleMultiplayer,
+  setDifficulty,
   setPlayerName,
   makeMove,
   checkResult,
