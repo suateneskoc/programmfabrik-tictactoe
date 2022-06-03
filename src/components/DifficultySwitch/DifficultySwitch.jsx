@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { CircleFillIcon, CircleHalfIcon, CircleIcon } from "../../assets/svgs";
 import DifficultyModal from "./DifficultyModal";
 
