@@ -114,6 +114,7 @@ export const gameSlice = createSlice({
       state.startTurn = (state.startTurn + 1) % 2;
       state.count = initialState.count;
       state.board = initialState.board;
+      state.winningCombinations = initialState.winningCombinations;
       state.history = initialState.history;
     },
     moveOpponent: (state) => {
