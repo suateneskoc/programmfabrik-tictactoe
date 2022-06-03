@@ -117,22 +117,66 @@ export const gameSlice = createSlice({
       state.board = initialState.board;
       state.history = initialState.history;
     },
-    makeRandomMove: (state) => {
+    moveOpponent: (state) => {
       if (state.multiplayer || !state.turn) {
         console.log("ERROR: tried to make a random move for an actual player");
         return;
       }
       if (state.ended) return;
-      let i;
-      do {
-        i = Math.floor(Math.random() * 9);
-      } while (state.board[Math.floor(i / 3)][i % 3] !== "");
-      state.turn
-        ? (state.board[Math.floor(i / 3)][i % 3] = "o")
-        : (state.board[Math.floor(i / 3)][i % 3] = "x");
-      state.turn = (state.turn + 1) % 2;
-      state.count++;
-      state.history.push({ xIndex: i % 3, yIndex: Math.floor(i / 3) });
+      const makeOpponentMove = (xIndex, yIndex) => {
+        state.board[xIndex][yIndex] = "o";
+        state.turn = (state.turn + 1) % 2;
+        state.count++;
+        state.history.push({ xIndex, yIndex });
+      };
+      const makeRandomMove = () => {
+        let i;
+        do {
+          i = Math.floor(Math.random() * 9);
+        } while (state.board[Math.floor(i / 3)][i % 3] !== "");
+        makeOpponentMove(Math.floor(i / 3), i % 3);
+      };
+      if (state.difficulty === "Easy") {
+        makeRandomMove();
+        return;
+      }
+      if (state.difficulty === "Normal") {
+        let xCount;
+        for (let i = 0; i < winningCombinations.length; i++) {
+          xCount = 0;
+          for (let j = 0; j < 3; j++) {
+            if (
+              state.board[winningCombinations[i][j][0]][
+                winningCombinations[i][j][1]
+              ] === "o"
+            )
+              break;
+            if (
+              state.board[winningCombinations[i][j][0]][
+                winningCombinations[i][j][1]
+              ] === "x"
+            )
+              xCount++;
+          }
+          if (xCount === 2) {
+            for (let j = 0; j < 3; j++) {
+              if (
+                state.board[winningCombinations[i][j][0]][
+                  winningCombinations[i][j][1]
+                ] === ""
+              ) {
+                makeOpponentMove(
+                  winningCombinations[i][j][0],
+                  winningCombinations[i][j][1]
+                );
+                return;
+              }
+            }
+          }
+        }
+        makeRandomMove();
+        return;
+      }
     },
     restartGame: (state) => {
       state.players[0].score = initialState.players[0].score;
@@ -167,7 +211,7 @@ export const {
   makeMove,
   checkResult,
   nextGame,
-  makeRandomMove,
+  moveOpponent,
   restartGame,
   undoMove,
 } = gameSlice.actions;

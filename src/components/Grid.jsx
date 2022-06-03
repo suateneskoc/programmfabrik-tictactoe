@@ -5,7 +5,7 @@ import {
   makeMove,
   checkResult,
   nextGame,
-  makeRandomMove,
+  moveOpponent,
 } from "../features/gameSlice";
 
 const GridButton = ({ xIndex, yIndex, value }) => {
@@ -67,7 +67,7 @@ const Grid = () => {
     setTimeout(() => {
       if (!game.ended && !game.multiplayer && game.turn) {
         setTimeout(() => {
-          dispatch(makeRandomMove());
+          dispatch(moveOpponent());
         }, 750);
       }
     }, 250);

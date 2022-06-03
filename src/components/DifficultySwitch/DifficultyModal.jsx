@@ -26,10 +26,8 @@ const DifficultyRadioButton = ({
         name="difficulty"
         id={`difficulty${difficulty}`}
         checked={game.difficulty === difficulty}
-        // defaultChecked={defaultChecked}
-        onClick={() => {
-          console.log("here");
-          dispatch(setDifficulty(difficulty));
+        onChange={(e) => {
+          if (e.target.checked) dispatch(setDifficulty(difficulty));
         }}
       />
       <label
