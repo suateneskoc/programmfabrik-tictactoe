@@ -277,6 +277,7 @@ export const gameSlice = createSlice({
       state.turn = initialState.turn;
       state.count = initialState.turn;
       state.board = initialState.board;
+      state.winningIndexes = initialState.winningIndexes;
       state.history = initialState.history;
     },
     undoMove: (state) => {
