@@ -107,6 +107,7 @@ export const gameSlice = createSlice({
           break;
         }
       }
+      state.winningCombinations = initialState.winningCombinations;
     },
     nextGame: (state) => {
       state.ended = false;
@@ -274,6 +275,7 @@ export const gameSlice = createSlice({
       state.players[0].score = initialState.players[0].score;
       state.players[1].score = initialState.players[1].score;
       state.turn = initialState.turn;
+      state.startTurn = initialState.startTurn;
       state.count = initialState.count;
       state.board = initialState.board;
       state.winningIndexes = initialState.winningIndexes;
