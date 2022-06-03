@@ -9,7 +9,6 @@ import {
 } from "../features/gameSlice";
 
 const includesArray = (outer, inner) => {
-  console.log(outer.length, inner.length);
   for (let i = 0; i < outer.length; i++) {
     let includes = true;
     for (let j = 0; j < inner.length; j++) {
