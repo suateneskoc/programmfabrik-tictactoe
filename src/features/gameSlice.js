@@ -244,7 +244,6 @@ export const gameSlice = createSlice({
           }
         };
         let bestScore = -Infinity;
-        console.log(bestScore);
         let bestMove;
         // Calculate minimax value for each move
         for (let i = 0; i < 3; i++) {
@@ -261,7 +260,6 @@ export const gameSlice = createSlice({
               if (score > bestScore) {
                 bestScore = score;
                 bestMove = [i, j];
-                console.log(bestMove);
               }
             }
           }
@@ -275,7 +273,7 @@ export const gameSlice = createSlice({
       state.players[0].score = initialState.players[0].score;
       state.players[1].score = initialState.players[1].score;
       state.turn = initialState.turn;
-      state.count = initialState.turn;
+      state.count = initialState.count;
       state.board = initialState.board;
       state.winningIndexes = initialState.winningIndexes;
       state.history = initialState.history;
