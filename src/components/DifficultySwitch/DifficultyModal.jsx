@@ -132,7 +132,7 @@ const DifficultyModal = ({ show, setShow }) => {
                 </DifficultyRadioButton>
                 <DifficultyRadioButton
                   difficulty="Hard"
-                  description="Your best bet against an AI is a tie"
+                  description="Good luck beating this baby AI"
                 >
                   <CircleFillIcon
                     width={21}

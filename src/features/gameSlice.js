@@ -123,7 +123,7 @@ export const gameSlice = createSlice({
         console.log("ERROR: tried to make a random move for an actual player");
         return;
       }
-      if (state.ended) return;
+      if (state.ended || state.count === 9) return;
       const makeOpponentMove = (xIndex, yIndex) => {
         state.board[xIndex][yIndex] = "o";
         state.turn = (state.turn + 1) % 2;
@@ -182,7 +182,7 @@ export const gameSlice = createSlice({
       }
       if (state.difficulty === "Hard") {
         const checkWinner = (board, count) => {
-          // returns 1: computer wins, -1: player winds, 0: tie, null: no winner
+          // 10: computer wins, -10: player winds, 0: tie, null: no winner at this state
           for (let i = 0; i < winningCombinations.length; i++) {
             if (
               board[winningCombinations[i][0][0]][
