@@ -8,6 +8,18 @@ import {
   moveOpponent,
 } from "../features/gameSlice";
 
+const includesArray = (outer, inner) => {
+  console.log(outer.length, inner.length);
+  for (let i = 0; i < outer.length; i++) {
+    let includes = true;
+    for (let j = 0; j < inner.length; j++) {
+      if (outer[i][j] !== inner[j]) includes = false;
+    }
+    if (includes) return true;
+  }
+  return false;
+};
+
 const GridButton = ({ xIndex, yIndex, value }) => {
   const game = useSelector((state) => state.game);
   const dispatch = useDispatch();
@@ -19,7 +31,7 @@ const GridButton = ({ xIndex, yIndex, value }) => {
     }
   };
 
-  if (value === "" && (!game.turn || game.multiplayer)) {
+  if (!game.ended && value === "" && (!game.turn || game.multiplayer)) {
     return (
       <button
         className={`aspect-square group bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-md shadow dark:shadow-white/10 p-4 transition`}
@@ -43,7 +55,7 @@ const GridButton = ({ xIndex, yIndex, value }) => {
     >
       <div
         className={`${
-          game.ended && !game.winningIndexes.includes([xIndex, yIndex])
+          game.ended && !includesArray(game.winningIndexes, [xIndex, yIndex])
             ? "opacity-25"
             : ""
         }`}
