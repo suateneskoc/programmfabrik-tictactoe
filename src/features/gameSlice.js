@@ -12,7 +12,11 @@ const initialState = {
   startTurn: 0,
   turn: 0,
   count: 0,
-  board: ["", "", "", "", "", "", "", "", ""],
+  board: [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ],
   history: [],
 };
 
@@ -36,14 +40,14 @@ export const gameSlice = createSlice({
       players[payload.index].name = payload.name;
     },
     makeMove: (state, { payload }) => {
-      if (state.board[payload] !== "") {
-        console.log("ERROR: tried to make a random move for an actual player");
+      if (state.board[payload.xIndex][payload.yIndex] !== "") {
+        console.log("ERROR: tried to make a move on an occupied spot");
         return;
       }
       if (state.turn) {
-        state.board[payload] = "o";
+        state.board[payload.xIndex][payload.yIndex] = "o";
       } else {
-        state.board[payload] = "x";
+        state.board[payload.xIndex][payload.yIndex] = "x";
       }
       state.turn = (state.turn + 1) % 2;
       state.count++;
@@ -60,9 +64,15 @@ export const gameSlice = createSlice({
       }
       for (let i = 0; i < winningCombinations.length; i++) {
         if (
-          state.board[winningCombinations[i][0]] === "x" &&
-          state.board[winningCombinations[i][1]] === "x" &&
-          state.board[winningCombinations[i][2]] === "x"
+          state.board[
+            (winningCombinations[i][0][0], winningCombinations[i][0][1])
+          ] === "x" &&
+          state.board[
+            (winningCombinations[i][1][0], winningCombinations[i][1][1])
+          ] === "x" &&
+          state.board[
+            (winningCombinations[i][2][0], winningCombinations[i][2][1])
+          ] === "x"
         ) {
           ended = true;
           state.players[0].score++;
@@ -74,9 +84,15 @@ export const gameSlice = createSlice({
           break;
         }
         if (
-          state.board[winningCombinations[i][0]] === "o" &&
-          state.board[winningCombinations[i][1]] === "o" &&
-          state.board[winningCombinations[i][2]] === "o"
+          state.board[
+            (winningCombinations[i][0][0], winningCombinations[i][0][1])
+          ] === "o" &&
+          state.board[
+            (winningCombinations[i][1][0], winningCombinations[i][1][1])
+          ] === "o" &&
+          state.board[
+            (winningCombinations[i][2][0], winningCombinations[i][2][1])
+          ] === "o"
         ) {
           ended = true;
           state.players[1].score++;
@@ -110,11 +126,13 @@ export const gameSlice = createSlice({
       let i;
       do {
         i = Math.floor(Math.random() * 9);
-      } while (state.board[i] !== "");
-      state.turn ? (state.board[i] = "o") : (state.board[i] = "x");
+      } while (state.board[Math.floor(i / 3)][i % 3] !== "");
+      state.turn
+        ? (state.board[Math.floor(i / 3)][i % 3] = "o")
+        : (state.board[Math.floor(i / 3)][i % 3] = "x");
       state.turn = (state.turn + 1) % 2;
       state.count++;
-      state.history.push(i);
+      state.history.push({ xIndex: i % 3, yIndex: Math.floor(i / 3) });
     },
     restartGame: (state) => {
       state.players[0].score = initialState.players[0].score;
@@ -126,9 +144,18 @@ export const gameSlice = createSlice({
     },
     undoMove: (state) => {
       if (!state.history.length) return;
-      state.board[state.history.pop()] = "";
-      state.count--;
-      state.turn = (state.turn + 1) % 2;
+      if (!state.multiplayer && state.history.length < 1) return;
+      if (state.multiplayer) {
+        const move = state.history.pop();
+        state.board[move.xIndex][move.yIndex] = "";
+        state.count--;
+        state.turn = (state.turn + 1) % 2;
+        return;
+      }
+      const moves = state.history.splice(state.history.length - 2, 2);
+      state.board[moves[0].xIndex][moves[0].yIndex] = "";
+      state.board[moves[1].xIndex][moves[1].yIndex] = "";
+      state.count -= 2;
     },
   },
 });
