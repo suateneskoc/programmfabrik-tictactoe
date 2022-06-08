@@ -25,19 +25,19 @@ const GridButton = ({ xIndex, yIndex, value }) => {
   const handleClick = () => {
     if (game.ended) {
       dispatch(nextGame());
-    } else if (!game.turn || game.multiplayer) {
+    } else if (game.xTurn || game.multiplayer) {
       dispatch(makeMove({ xIndex, yIndex }));
     }
   };
 
-  if (!game.ended && value === "" && (!game.turn || game.multiplayer)) {
+  if (!game.ended && value === "" && (game.xTurn || game.multiplayer)) {
     return (
       <button
         className={`aspect-square group bg-gray-100 hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 rounded-md shadow dark:shadow-white/10 p-4 transition`}
         onClick={handleClick}
       >
         <div className="opacity-0 group-hover:opacity-10">
-          {!game.turn ? (
+          {game.xTurn ? (
             <XLgIcon className="w-full h-full" />
           ) : game.multiplayer ? (
             <CircleIcon className="w-full h-full" />
@@ -76,7 +76,7 @@ const Grid = () => {
   useEffect(() => {
     dispatch(checkResult());
     setTimeout(() => {
-      if (!game.ended && !game.multiplayer && game.turn) {
+      if (!game.ended && !game.multiplayer && !game.xTurn) {
         setTimeout(() => {
           dispatch(moveOpponent());
         }, 750);

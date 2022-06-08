@@ -9,9 +9,9 @@ const initialState = {
     { name: "Player 2", score: 0 },
   ],
   ended: false,
-  startTurn: 0,
-  turn: 0,
-  count: 0,
+  xStarted: true,
+  xTurn: true,
+  moveCount: 0,
   board: [
     ["", "", ""],
     ["", "", ""],
@@ -33,9 +33,12 @@ export const gameSlice = createSlice({
       state.multiplayer = !state.multiplayer;
       state.players[0].score = initialState.players[0].score;
       state.players[1].score = initialState.players[1].score;
-      state.turn = initialState.turn;
-      state.count = initialState.turn;
+      state.ended = initialState.ended;
+      state.xStarted = initialState.xStarted;
+      state.xTurn = initialState.xTurn;
+      state.moveCount = initialState.moveCount;
       state.board = initialState.board;
+      state.winningIndexes = initialState.winningIndexes;
       state.history = initialState.history;
     },
     setDifficulty: (state, { payload }) => {
@@ -49,20 +52,20 @@ export const gameSlice = createSlice({
         console.log("ERROR: tried to make a move on an occupied spot");
         return;
       }
-      if (state.turn) {
-        state.board[payload.xIndex][payload.yIndex] = "o";
-      } else {
+      if (state.xTurn) {
         state.board[payload.xIndex][payload.yIndex] = "x";
+      } else {
+        state.board[payload.xIndex][payload.yIndex] = "o";
       }
-      state.turn = (state.turn + 1) % 2;
-      state.count++;
+      state.xTurn = !state.xTurn;
+      state.moveCount++;
       state.history.push(payload);
     },
     checkResult: (state) => {
       if (state.ended) {
         return;
       }
-      if (state.count === 9) {
+      if (state.moveCount === 9) {
         state.ended = true;
       }
       for (let i = 0; i < winningCombinations.length; i++) {
@@ -84,7 +87,7 @@ export const gameSlice = createSlice({
             winningCombinations[i][1],
             winningCombinations[i][2],
           ];
-          break;
+          return;
         }
         if (
           state.board[winningCombinations[i][0][0]][
@@ -104,30 +107,30 @@ export const gameSlice = createSlice({
             winningCombinations[i][1],
             winningCombinations[i][2],
           ];
-          break;
+          return;
         }
       }
-      state.winningCombinations = initialState.winningCombinations;
+      state.winningIndexes = initialState.winningIndexes;
     },
     nextGame: (state) => {
       state.ended = false;
-      state.turn = (state.startTurn + 1) % 2;
-      state.startTurn = (state.startTurn + 1) % 2;
-      state.count = initialState.count;
+      state.xTurn = !state.xStarted;
+      state.xStarted = !state.xStarted;
+      state.moveCount = initialState.moveCount;
       state.board = initialState.board;
-      state.winningCombinations = initialState.winningCombinations;
+      state.winningIndexes = initialState.winningIndexes;
       state.history = initialState.history;
     },
     moveOpponent: (state) => {
-      if (state.multiplayer || !state.turn) {
+      if (state.multiplayer || state.xTurn) {
         console.log("ERROR: tried to make a random move for an actual player");
         return;
       }
-      if (state.ended || state.count === 9) return;
+      if (state.ended || state.moveCount === 9) return;
       const makeOpponentMove = (xIndex, yIndex) => {
         state.board[xIndex][yIndex] = "o";
-        state.turn = (state.turn + 1) % 2;
-        state.count++;
+        state.xTurn = !state.xTurn;
+        state.moveCount++;
         state.history.push({ xIndex, yIndex });
       };
       const makeRandomMove = () => {
@@ -181,41 +184,41 @@ export const gameSlice = createSlice({
         return;
       }
       if (state.difficulty === "Hard") {
-        const checkWinner = (board, count) => {
+        const checkWinner = (board, moveCount) => {
           // 10: computer wins, -10: player winds, 0: tie, null: no winner at this state
           for (let i = 0; i < winningCombinations.length; i++) {
             if (
-              board[winningCombinations[i][0][0]][
+              state.board[winningCombinations[i][0][0]][
                 winningCombinations[i][0][1]
               ] === "x" &&
-              board[winningCombinations[i][1][0]][
+              state.board[winningCombinations[i][1][0]][
                 winningCombinations[i][1][1]
               ] === "x" &&
-              board[winningCombinations[i][2][0]][
+              state.board[winningCombinations[i][2][0]][
                 winningCombinations[i][2][1]
               ] === "x"
             ) {
               return -10;
             }
             if (
-              board[winningCombinations[i][0][0]][
+              state.board[winningCombinations[i][0][0]][
                 winningCombinations[i][0][1]
               ] === "o" &&
-              board[winningCombinations[i][1][0]][
+              state.board[winningCombinations[i][1][0]][
                 winningCombinations[i][1][1]
               ] === "o" &&
-              board[winningCombinations[i][2][0]][
+              state.board[winningCombinations[i][2][0]][
                 winningCombinations[i][2][1]
               ] === "o"
             ) {
               return 10;
             }
           }
-          if (count === 9) return 0;
+          if (moveCount === 9) return 0;
           return null;
         };
-        const minimax = (board, count, depth, maximizing) => {
-          let score = checkWinner(board, count);
+        const minimax = (board, moveCount, depth, maximizing) => {
+          let score = checkWinner(board, moveCount);
           if (score !== null) return score;
           if (maximizing) {
             let bestScore = -Infinity;
@@ -223,7 +226,7 @@ export const gameSlice = createSlice({
               for (let j = 0; j < 3; j++) {
                 if (board[i][j] === "") {
                   board[i][j] = "o";
-                  let score = minimax(board, count + 1, depth + 1, false);
+                  let score = minimax(board, moveCount + 1, depth + 1, false);
                   board[i][j] = "";
                   bestScore = Math.max(score - depth, bestScore);
                 }
@@ -236,7 +239,7 @@ export const gameSlice = createSlice({
               for (let j = 0; j < 3; j++) {
                 if (board[i][j] === "") {
                   board[i][j] = "x";
-                  let score = minimax(board, count + 1, depth + 1, true);
+                  let score = minimax(board, moveCount + 1, depth + 1, true);
                   board[i][j] = "";
                   bestScore = Math.min(score + depth, bestScore);
                 }
@@ -257,7 +260,7 @@ export const gameSlice = createSlice({
                 [...state.board[2]],
               ];
               nextBoard[i][j] = "o";
-              let score = minimax(nextBoard, state.count + 1, 0, false);
+              let score = minimax(nextBoard, state.moveCount + 1, 0, false);
               nextBoard[i][j] = "";
               if (score > bestScore) {
                 bestScore = score;
@@ -271,30 +274,27 @@ export const gameSlice = createSlice({
       }
       console.log("ERROR: Game difficulty state is messed up.");
     },
-    restartGame: (state) => {
-      state.players[0].score = initialState.players[0].score;
-      state.players[1].score = initialState.players[1].score;
-      state.turn = initialState.turn;
-      state.startTurn = initialState.startTurn;
-      state.count = initialState.count;
-      state.board = initialState.board;
-      state.winningIndexes = initialState.winningIndexes;
-      state.history = initialState.history;
+    restartGame: ({ multiplayer, difficulty }) => {
+      return {
+        ...initialState,
+        multiplayer: multiplayer,
+        difficulty: difficulty,
+      };
     },
-    undoMove: (state) => {
-      if (!state.history.length) return;
-      if (!state.multiplayer && state.history.length < 1) return;
-      if (state.multiplayer) {
-        const move = state.history.pop();
-        state.board[move.xIndex][move.yIndex] = "";
-        state.count--;
-        state.turn = (state.turn + 1) % 2;
+    undoMove: ({ multiplayer, xTurn, moveCount, board, history }) => {
+      if (!history.length) return;
+      if (!multiplayer && history.length < 1) return;
+      if (multiplayer) {
+        const move = history.pop();
+        board[move.xIndex][move.yIndex] = "";
+        moveCount--;
+        xTurn = !xTurn;
         return;
       }
-      const moves = state.history.splice(state.history.length - 2, 2);
-      state.board[moves[0].xIndex][moves[0].yIndex] = "";
-      state.board[moves[1].xIndex][moves[1].yIndex] = "";
-      state.count -= 2;
+      const moves = history.splice(history.length - 2, 2);
+      board[moves[0].xIndex][moves[0].yIndex] = "";
+      board[moves[1].xIndex][moves[1].yIndex] = "";
+      moveCount -= 2;
     },
   },
 });
