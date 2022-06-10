@@ -188,66 +188,68 @@ export const gameSlice = createSlice({
           // 10: computer wins, -10: player winds, 0: tie, null: no winner at this state
           for (let i = 0; i < winningCombinations.length; i++) {
             if (
-              state.board[winningCombinations[i][0][0]][
+              board[winningCombinations[i][0][0]][
                 winningCombinations[i][0][1]
               ] === "x" &&
-              state.board[winningCombinations[i][1][0]][
+              board[winningCombinations[i][1][0]][
                 winningCombinations[i][1][1]
               ] === "x" &&
-              state.board[winningCombinations[i][2][0]][
+              board[winningCombinations[i][2][0]][
                 winningCombinations[i][2][1]
               ] === "x"
             ) {
-              return -10;
+              return moveCount - 10;
             }
             if (
-              state.board[winningCombinations[i][0][0]][
+              board[winningCombinations[i][0][0]][
                 winningCombinations[i][0][1]
               ] === "o" &&
-              state.board[winningCombinations[i][1][0]][
+              board[winningCombinations[i][1][0]][
                 winningCombinations[i][1][1]
               ] === "o" &&
-              state.board[winningCombinations[i][2][0]][
+              board[winningCombinations[i][2][0]][
                 winningCombinations[i][2][1]
               ] === "o"
             ) {
-              return 10;
+              return 10 - moveCount;
             }
           }
           if (moveCount === 9) return 0;
           return null;
         };
-        const minimax = (board, moveCount, depth, maximizing) => {
+
+        const minimax = (board, moveCount, maximizing) => {
           let score = checkWinner(board, moveCount);
           if (score !== null) return score;
+          let bestScore;
           if (maximizing) {
-            let bestScore = -Infinity;
+            bestScore = -Infinity;
             for (let i = 0; i < 3; i++) {
               for (let j = 0; j < 3; j++) {
                 if (board[i][j] === "") {
                   board[i][j] = "o";
-                  let score = minimax(board, moveCount + 1, depth + 1, false);
+                  score = minimax(board, moveCount + 1, false);
                   board[i][j] = "";
-                  bestScore = Math.max(score - depth, bestScore);
+                  bestScore = Math.max(score, bestScore);
                 }
               }
             }
-            return bestScore;
           } else {
-            let bestScore = Infinity;
+            bestScore = Infinity;
             for (let i = 0; i < 3; i++) {
               for (let j = 0; j < 3; j++) {
                 if (board[i][j] === "") {
                   board[i][j] = "x";
-                  let score = minimax(board, moveCount + 1, depth + 1, true);
+                  score = minimax(board, moveCount + 1, true);
                   board[i][j] = "";
-                  bestScore = Math.min(score + depth, bestScore);
+                  bestScore = Math.min(score, bestScore);
                 }
               }
             }
-            return bestScore;
           }
+          return bestScore;
         };
+
         let bestScore = -Infinity;
         let bestMove;
         // Calculate minimax value for each move
@@ -260,7 +262,7 @@ export const gameSlice = createSlice({
                 [...state.board[2]],
               ];
               nextBoard[i][j] = "o";
-              let score = minimax(nextBoard, state.moveCount + 1, 0, false);
+              let score = minimax(nextBoard, state.moveCount + 1, false);
               nextBoard[i][j] = "";
               if (score > bestScore) {
                 bestScore = score;
