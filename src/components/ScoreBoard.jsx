@@ -33,7 +33,7 @@ const RealPlayerBoard = ({ index }) => {
             <input
               type="text"
               value={name}
-              className="text-xl font-medium block w-32 border-gray-300 focus:ring-gray-500 focus:border-gray-500 dark:border-gray-700 dark:bg-black shadow-sm rounded-md px-2 py-1.5"
+              className="text-xl font-medium block w-28 sm:w-32 border-gray-300 focus:ring-gray-500 focus:border-gray-500 dark:border-gray-700 dark:bg-black shadow-sm rounded-md px-2 py-1.5"
               onChange={(e) => setName(e.target.value)}
               autoComplete="off"
             />
@@ -41,7 +41,7 @@ const RealPlayerBoard = ({ index }) => {
           </form>
         ) : (
           <>
-            <div className="text-xl font-medium w-24 px-2 py-1.5">
+            <div className="text-xl font-medium whitespace-nowrap w-20 sm:w-24 px-2 py-1.5">
               {game.players[index].name}
             </div>
             <button
@@ -63,6 +63,10 @@ const ScoreBoard = () => {
   return (
     <div className="flex justify-evenly mb-5">
       <RealPlayerBoard index={0} />
+      <div className="flex-col text-center text-gray-500 p-2">
+        <div className="text-xl font-bold py-1.5">:</div>
+        <div className="text-4xl py-4">{game.drawCount}</div>
+      </div>
       {game.multiplayer ? (
         <RealPlayerBoard index={1} />
       ) : (
@@ -73,7 +77,7 @@ const ScoreBoard = () => {
         >
           <div className="flex justify-center items-center">
             <CircleIcon width={16} height={16} className="mx-1" />
-            <div className="text-xl font-medium w-24 px-2 py-1.5 mr-8">
+            <div className="text-xl font-medium whitespace-nowrap w-28 sm:w-32 px-2 py-1.5">
               {game.players[1].name}
             </div>
           </div>

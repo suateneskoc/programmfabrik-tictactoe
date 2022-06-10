@@ -8,6 +8,7 @@ const initialState = {
     { name: "Player 1", score: 0 },
     { name: "Player 2", score: 0 },
   ],
+  drawCount: 0,
   ended: false,
   xStarted: true,
   xTurn: true,
@@ -33,6 +34,7 @@ export const gameSlice = createSlice({
       state.multiplayer = !state.multiplayer;
       state.players[0].score = initialState.players[0].score;
       state.players[1].score = initialState.players[1].score;
+      state.drawCount = initialState.drawCount;
       state.ended = initialState.ended;
       state.xStarted = initialState.xStarted;
       state.xTurn = initialState.xTurn;
@@ -45,7 +47,11 @@ export const gameSlice = createSlice({
       state.difficulty = payload;
     },
     setPlayerName: ({ players }, { payload }) => {
-      players[payload.index].name = payload.name;
+      if (payload.name === "") {
+        players[payload.index].name = "Player " + (payload.index + 1);
+      } else {
+        players[payload.index].name = payload.name;
+      }
     },
     makeMove: (state, { payload }) => {
       if (state.board[payload.xIndex][payload.yIndex] !== "") {
@@ -110,7 +116,10 @@ export const gameSlice = createSlice({
           return;
         }
       }
-      state.winningIndexes = initialState.winningIndexes;
+      if (state.moveCount === 9) {
+        state.drawCount++;
+        state.winningIndexes = initialState.winningIndexes;
+      }
     },
     nextGame: (state) => {
       state.ended = false;
