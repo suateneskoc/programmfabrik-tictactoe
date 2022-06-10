@@ -11,7 +11,9 @@ const RealPlayerBoard = ({ index }) => {
   return (
     <div
       className={`${
-        index === game.turn ? "bg-gray-100 dark:bg-gray-900" : ""
+        (index === 0 && game.xTurn) || (index === 1 && !game.xTurn)
+          ? "bg-gray-100 dark:bg-gray-900"
+          : ""
       } group flex flex-col items-center rounded-lg p-2 transition duration-500`}
     >
       <div className="flex justify-center items-center">
@@ -66,7 +68,7 @@ const ScoreBoard = () => {
       ) : (
         <div
           className={`${
-            game.turn ? "bg-gray-100 dark:bg-gray-900" : ""
+            !game.xTurn ? "bg-gray-100 dark:bg-gray-900" : ""
           } rounded-lg flex flex-col items-center p-2 transition duration-500`}
         >
           <div className="flex justify-center items-center">
