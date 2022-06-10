@@ -273,7 +273,10 @@ export const gameSlice = createSlice({
               nextBoard[i][j] = "o";
               let score = minimax(nextBoard, state.moveCount + 1, false);
               nextBoard[i][j] = "";
-              if (score > bestScore) {
+              if (
+                score > bestScore ||
+                (score === bestScore && Math.random < 0.5)
+              ) {
                 bestScore = score;
                 bestMove = [i, j];
               }
